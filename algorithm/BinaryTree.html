@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>二叉树</title>
+</head>
+<body>
+    <img src="./BinaryTree.png" alt="">
+    <script>
+        function BinaryTree() {
+            //根节点（没有父亲节点）
+            var rootNode = null;
+
+            //一个节点树（可能包括一个左节点树和一个又节点树）
+            var NodeTree = function(key) {
+                this.key = key;
+                this.left = this.right = null;
+            }
+
+
+            //插入节点
+            var insertNode = function(node, newNode) {
+                if(newNode.key < node.key){
+                    if(node.left === null){
+                        node.left = newNode;
+                    }else{
+                        insertNode(node.left, newNode);
+                    }
+                }else{
+                    if(node.right === null){
+                        node.right = newNode;
+                    }else{
+                        insertNode(node.right, newNode);
+                    }
+                }
+            }
+            this.insert = function(key) {
+                var newNode = new NodeTree(key);
+                if(rootNode === null){
+                    rootNode = newNode;
+                }else{
+                    insertNode(rootNode, newNode);
+                }
+            }
+
+
+            //中序遍历  （首先遍历左子树，然后访问当前结点，最后遍历右子树）
+            var inOrderTraverseNode = function(node, callback) {
+                if(node !== null){
+                    !!node.left && inOrderTraverseNode(node.left, callback);
+                    callback(node.key);
+                    !!node.right && inOrderTraverseNode(node.right, callback);
+                }
+            }
+            this.inOrderTraverse = function(callback) {
+                inOrderTraverseNode(rootNode, callback)
+            }
+
+
+            //前序遍历 （首先访问根结点然后遍历左子树，最后遍历右子树）
+            var preTraverseNode = function(node, callback) {
+                if(node !== null){
+                    callback(node.key);
+                    !!node.left && preTraverseNode(node.left, callback);
+                    !!node.right && preTraverseNode(node.right, callback);
+                }
+            }
+            this.preTraverse = function(callback) {
+                preTraverseNode(rootNode, callback)
+            }
+
+            //后序遍历（首先遍历左子树，然后遍历右子树，最后访问根结点）
+            var nextTraverseNode = function(node, callback) {
+                if(node !== null){
+                    !!node.left && nextTraverseNode(node.left, callback);
+                    !!node.right && nextTraverseNode(node.right, callback);
+                    callback(node.key);
+                }
+            }
+            this.nextTraverse = function(callback) {
+                nextTraverseNode(rootNode, callback)
+            }
+
+
+            //查找最小值
+            var minNode = function(node) {
+                if(node){
+                    while (node.left !== null) {
+                        node = node.left;
+                    }
+                    return node.key;
+                }
+                return null;
+            };
+            this.min = function() {
+                return minNode(rootNode);
+            }
+
+            //查找最大值
+            var maxNode = function(node) {
+                if(node){
+                    while (node.right !== null) {
+                        node = node.right;
+                    }
+                    return node.key;
+                }
+                return null;
+            };
+            this.max = function() {
+                return maxNode(rootNode);
+            }
+
+            //查找某个值
+            var searchNode = function(node, key) {
+                if(node === null){
+                    return false;
+                }
+
+                if(key < node.key){
+                    return searchNode(node.left, key);
+                } else if (key > node.key) {
+                    return searchNode(node.right, key);
+                } else {
+                    return true;
+                }
+            };
+            this.search = function(key) {
+                return searchNode(rootNode, key);
+            }
+
+            //查找最小值的节点
+            var searchMinNode = function(node) {
+                if(node){
+                    while (node.left !== null) {
+                        node = node.left;
+                    }
+                    return node;
+                }
+                return null;
+            }
+
+            //删除某个节点
+            var removeNode = function(node, key) {
+                if(node === null){
+                    return null;
+                }
+
+                if(key < node.key) {
+                    node.left = removeNode(node.left, key);
+                    return node;
+                } else if (key > node.key) {
+                    node.right = removeNode(node.right, key);
+                    return node;
+                }else{
+                    if(node.left === null && node.right === null){
+                        node = null;
+                        return node;
+                    } else if (node.left === null && node.right !== null) {
+                        node = node.right;
+                        return node;
+                    } else if (node.left !== null && node.right === null) {
+                        node = node.left;
+                        return node;
+                    } else {
+                        var minNode = searchMinNode(node.right);
+                        node.key = minNode.key;
+                        node.right = removeNode(node.right, minNode.key);
+                        return node;
+                    }
+                }
+            }
+            this.remove = function(key) {
+                return removeNode(rootNode, key);
+            }
+        }
+
+        var nodes = [7, 9, 3, 6, 2, 11, 8, 13, 4, 1];
+        var binaryTree = new BinaryTree();
+
+        nodes.forEach(function(key) {
+            binaryTree.insert(key);
+        });
+
+        //二叉树遍历的遍历有三种：中序遍历，前序遍历，后序遍历
+
+        //中序遍历
+        // binaryTree.inOrderTraverse(function(key) {
+        //     console.log(key);
+        // });
+
+        //前序遍历
+        // binaryTree.preTraverse(function(key) {
+        //     console.log(key);
+        // });
+
+        //后序遍历
+        // binaryTree.nextTraverse(function(key) {
+        //     console.log(key);
+        // });
+
+        // console.log(binaryTree.min());
+        // console.log(binaryTree.max());
+        // console.log(binaryTree.search(8));
+        // console.log(binaryTree.search(20));
+
+        //删除某个节点 删除后还是完整的二叉树
+        // binaryTree.remove(1);
+        // binaryTree.remove(2);
+        // binaryTree.remove(11);
+        binaryTree.remove(9);
+        binaryTree.inOrderTraverse(function(key) {console.log(key)});
+    </script>
+</body>
+</html>

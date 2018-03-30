@@ -164,5 +164,6 @@
     })                  // => 1+2+3  => 6
     var arr = [3, 9, 6]
     var max = arr.reduce(function(x, y){
-
+        console.log(x + '|' + y);
+        return 
     })

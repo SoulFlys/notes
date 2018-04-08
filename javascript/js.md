@@ -297,4 +297,48 @@ Array.isArray([])           // => true
     }
     func.bind(o)();     // => 1
     func.bind(p)();     // => 2
+
+    function getConfig(colors, size, othersOptions) {
+        console.log(colors, size, othersOptions)
+    }
+    var defaultConfig = getConfig.bind(null, '#CC0000', '1024*768');
+    defaultConfig(123)      // => #CC0000  1024*768  123
+    defaultConfig(456)      // => #CC0000  1024*768  456
 ```
+
+### 闭包
+```javascript
+function outer(){
+    var localval = 30;
+    return localval;
+}
+outer() // => 30
+
+function outer(){
+    var localval = 30;
+    return function(){
+        return localval;
+    };
+}
+var func = outer()
+func()  // => 30
+
+
+
+for(var i = 0; i < 4; i++){
+    setTimeout(function(){
+        console.log(i);     // 4 4 4 4
+    },0)
+}
+for(var i = 0; i < 4; i++){
+    (function(i){
+        setTimeout(function(){
+            console.log(i);     // 0 1 2 3
+        },0)
+    })(i)    
+}
+```
+
+* 闭包会使得函数中的变量都被保存在内存中，内存消耗很大，所以不能滥用闭包，否则会造成网页的性能问题，在IE中可能导致内存泄露。解决方法是，在退出函数之前，将不使用的局部变量全部删除
+
+* 闭包会在父函数外部，改变父函数内部变量的值。所以，如果你把父函数当作对象（object）使用，把闭包当作它的公用方法（Public Method），把内部变量当作它的私有属性（private value），这时一定要小心，不要随便改变父函数内部变量的值。
